@@ -351,13 +351,13 @@ const ColorModalContent = ({ setActiveModal, activeModal }) => {
                             </ErrorBoundary>
                         </div>
                         <div style={{ display: "flex", justifyContent: "space-between", overflowY: "hidden", paddingLeft: ".5rem", paddingRight: ".5rem" }}>
-                            <Typography component="div" variant="subtitle2">Color of least active countries</Typography>
+                            <Typography component="div" variant="subtitle2">Lowest value on map</Typography>
                             <motion.div
                                 custom={colors.length}
                                 animate="visible"
                                 initial="hidden"
                                 variants={variants}
-                            ><Typography component="div" variant="subtitle2">Color of most active countries</Typography></motion.div>
+                            ><Typography component="div" variant="subtitle2">Highest value on map</Typography></motion.div>
                         </div>
                         <div style={{ display: "flex", justifyContent: "space-between", margin: "1rem" }}>
                             <Shake pose={["shake"]} poseKey={shakeCountAdd}>
@@ -554,18 +554,11 @@ function invertColor(hex) {
     if (hex.length !== 6) {
         throw new Error('Invalid HEX color.');
     }
-    // invert color components
-    var r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
-        g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16),
-        b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
-    // pad each with zeros and return
-    return '#' + padZero(r) + padZero(g) + padZero(b);
-}
+    var r = parseInt(hex.slice(0, 2), 16)
+    var g = parseInt(hex.slice(2, 4), 16)
+    var b = parseInt(hex.slice(4, 6), 16)
 
-function padZero(str, len) {
-    len = len || 2;
-    var zeros = new Array(len).join('0');
-    return (zeros + str).slice(-len);
+    return (r * 0.299 + g * 0.587 + b * 0.114) > 186 ? '#000000' : '#FFFFFF';
 }
 
 function ColorDropper() {
