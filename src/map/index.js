@@ -231,11 +231,11 @@ const Modal = ({ activeModal, setActiveModal }) => {
 const DataModalContent = ({ activeModal, setActiveModal }) => {
     return (
         <Dialog onClose={() => setActiveModal(null)} open={activeModal === "data"} maxWidth={false}>
-            <DialogTitle style={{  }}>Data Sources</DialogTitle>
-            <div style = {{paddingBottom:"1rem", paddingTop:"0rem", paddingLeft:"1.5rem", paddingRight:"1.5rem"}}><h5>Covid Data</h5><a rel="noreferrer" target = "_blank" href = "https://github.com/nytimes/covid-19-data">The New York Times</a>; Reports from state and local health agencies</div>
-            <div style = {{padding:"1rem", paddingLeft:"1.5rem", paddingRight:"1.5rem"}}><h5>Population Data</h5><a rel="noreferrer" target = "_blank" href = "https://www.bea.gov/data/gdp/gdp-county-metro-and-other-areas">Bureau of Economic Analysis</a>; GDP by County, Metro, and Other Areas</div>
-            <div style = {{padding:"1rem", paddingLeft:"1.5rem", paddingRight:"1.5rem"}}><h5>Labor Data</h5><a rel="noreferrer" target = "_blank" href = "https://www.bls.gov/data/">Bureau of Labor Statistics</a>; Labor Force Statistics</div>
-            <div style = {{padding:"1rem", paddingLeft:"1.5rem", paddingRight:"1.5rem", paddingBottom:"1.5rem"}}><h5>Population Data</h5><a rel="noreferrer" target = "_blank" href = "https://www.ers.usda.gov/data-products/county-level-data-sets/">US Department of Agriculture</a>; Population, Income, Education, and Poverty</div>
+            <DialogTitle style={{}}>Data Sources</DialogTitle>
+            <div style={{ paddingBottom: "1rem", paddingTop: "0rem", paddingLeft: "1.5rem", paddingRight: "1.5rem" }}><h5>Covid Data</h5><a rel="noreferrer" target="_blank" href="https://github.com/nytimes/covid-19-data">The New York Times</a>; Reports from state and local health agencies</div>
+            <div style={{ padding: "1rem", paddingLeft: "1.5rem", paddingRight: "1.5rem" }}><h5>Population Data</h5><a rel="noreferrer" target="_blank" href="https://www.bea.gov/data/gdp/gdp-county-metro-and-other-areas">Bureau of Economic Analysis</a>; GDP by County, Metro, and Other Areas</div>
+            <div style={{ padding: "1rem", paddingLeft: "1.5rem", paddingRight: "1.5rem" }}><h5>Labor Data</h5><a rel="noreferrer" target="_blank" href="https://www.bls.gov/data/">Bureau of Labor Statistics</a>; Labor Force Statistics</div>
+            <div style={{ padding: "1rem", paddingLeft: "1.5rem", paddingRight: "1.5rem", paddingBottom: "1.5rem" }}><h5>Population Data</h5><a rel="noreferrer" target="_blank" href="https://www.ers.usda.gov/data-products/county-level-data-sets/">US Department of Agriculture</a>; Population, Income, Education, and Poverty</div>
         </Dialog>
     )
 }
@@ -408,7 +408,7 @@ const ColorSwatch = ({ itemIndex: index, hex, colors, activeSwatch, setActiveSwa
                     variants={variants}
                     className="colorSwatchCardContainer" onClick={(e) => setActiveSwatch({ color: colors[index], index, elt: e.currentTarget })}>
                     <div className={dragSwatch ? "colorSwatchCard" : "colorSwatchCard hoverable"} style={(index === activeSwatch.index) ? { border: `2px ${invertColor(hex)} solid`, backgroundColor: hex, height: "90px", borderTopLeftRadius: ".3rem", borderTopRightRadius: ".3rem" } : { backgroundColor: hex, border: `2px ${hex} solid`, }} >
-                        <Typography variant="button" component="span" style={{ color: invertColor(hex), fontSize: "10px" }}>{hex}</Typography>
+                        <Typography variant="button" component="span" style={{ color: invertColor(hex, true), fontSize: "10px" }}>{hex}</Typography>
                     </div>
                 </motion.div>
             </div>
@@ -543,7 +543,13 @@ const chop = (arr, index) => {
     return ans
 }
 
-function invertColor(hex) {
+function padZero(str, len) {
+    len = len || 2;
+    var zeros = new Array(len).join('0');
+    return (zeros + str).slice(-len);
+}
+
+function invertColor(hex, bw) {
     if (hex.indexOf('#') === 0) {
         hex = hex.slice(1);
     }
@@ -558,7 +564,15 @@ function invertColor(hex) {
     var g = parseInt(hex.slice(2, 4), 16)
     var b = parseInt(hex.slice(4, 6), 16)
 
-    return (r * 0.299 + g * 0.587 + b * 0.114) > 186 ? '#000000' : '#FFFFFF';
+    if (bw) {
+        return (r * 0.299 + g * 0.587 + b * 0.114) > 186 ? '#000000' : '#FFFFFF';
+    }
+
+    r = (255 - r).toString(16);
+    g = (255 - g).toString(16);
+    b = (255 - b).toString(16);
+
+    return "#" + padZero(r) + padZero(g) + padZero(b);
 }
 
 function ColorDropper() {
